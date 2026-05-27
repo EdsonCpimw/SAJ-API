@@ -1,0 +1,36 @@
+# DSV
+cors:
+  originPatterns: http://localhost:8080,http://localhost:3000 # Colocar urls ambiente de DEV
+spring:
+  application:
+    name: saj-api
+  config:
+    activate:
+      on-profile: dsv
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+logging:
+  level:
+    #root: INFO
+    com.software.saj-api: INFO
+
+# Exemplo para Produção
+---
+spring:
+  config:
+    activate:
+      on-profile: ${SPRING_PROFILES_ACTIVE}
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}

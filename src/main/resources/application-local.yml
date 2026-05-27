@@ -1,0 +1,41 @@
+# LOCAL
+# O spring não consegue pegar as informações do arquivo .env ao rodar no intelij, necessário colocar parametros default
+cors:
+  originPatterns: http://localhost:8080,http://localhost:3000
+spring:
+  application:
+    name: saj-api
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT:5432}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  output:
+    ansi:
+      enabled: always
+logging:
+  level:
+    #root: INFO
+    com.software.saj-api: INFO
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+    include-exception: true
+
+#jwt:
+#  secret: ${SECRET_KEY_JWT}
+#  expiration: 180000

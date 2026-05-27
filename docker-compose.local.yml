@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  postgres:
+    # imagem oficial do postgres
+    image: postgres:16-alpine
+    # nome do container para esse bando de dados
+    container_name: saj-api-postgres
+    # faz o restart do banco automatico
+    restart: always
+    # variaveis de ambiente (usuario, senha e nome bonco)
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    # porta externa do container e porta interna do container que funciona o postgres
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT}:5432"
+    # espelho da pasta do banco de dados postgres para a máquina local
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
