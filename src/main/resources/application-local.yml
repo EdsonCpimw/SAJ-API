@@ -1,7 +1,7 @@
 # LOCAL
 # O spring não consegue pegar as informações do arquivo .env ao rodar no intelij, necessário colocar parametros default
 cors:
-  originPatterns: http://localhost:8080,http://localhost:3000
+  originPatterns: http://localhost:8080,http://localhost:3000,http://192.168.0.9:9001,http://localhost:9001
 spring:
   application:
     name: saj-api
@@ -30,11 +30,18 @@ logging:
     #root: INFO
     com.software.saj-api: INFO
 server:
+  port: 8080
+  address: 0.0.0.0  # aceita conexões de qualquer origem na rede
   error:
     include-message: always
     include-binding-errors: always
     include-stacktrace: always
     include-exception: true
+
+springdoc:
+  paths-to-match: /**
+  swagger-ui:
+    use-root-path: true
 
 #jwt:
 #  secret: ${SECRET_KEY_JWT}
