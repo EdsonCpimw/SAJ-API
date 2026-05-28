@@ -30,7 +30,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_MATCHERS).permitAll()
-                        .anyRequest().authenticated()
+                                .anyRequest().permitAll()
+                        //.anyRequest().authenticated()
                 );
         return http.build();
     }
