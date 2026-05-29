@@ -12,9 +12,6 @@ spring:
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT:5432}/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
-  mvc:
-    servlet:
-      path: /api/v1
   jpa:
     database: POSTGRESQL
     hibernate:
@@ -44,6 +41,7 @@ springdoc:
   paths-to-match: /**
   swagger-ui:
     use-root-path: true
+    deep-linking: false
 
 #jwt:
 #  secret: ${SECRET_KEY_JWT}
