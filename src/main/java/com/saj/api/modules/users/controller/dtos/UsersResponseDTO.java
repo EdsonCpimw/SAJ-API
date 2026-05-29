@@ -1,5 +1,7 @@
 package com.saj.api.modules.users.controller.dtos;
 
+import com.saj.api.modules.users.domain.entities.Company;
+
 import java.util.UUID;
 
 public record UsersResponseDTO(
@@ -7,5 +9,6 @@ public record UsersResponseDTO(
         String name,
         String email,
         String phone,
-        boolean active
+        boolean active,
+        String companyName
 ) {}

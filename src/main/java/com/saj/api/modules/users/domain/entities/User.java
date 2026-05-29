@@ -31,7 +31,7 @@ public class User {
     @CreationTimestamp
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "escritorio_id", nullable = false)
     private Company company;
 }
