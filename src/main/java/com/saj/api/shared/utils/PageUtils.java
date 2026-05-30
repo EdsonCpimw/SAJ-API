@@ -1,13 +1,13 @@
 package com.saj.api.shared.utils;
 
-import com.saj.api.shared.dto.PageResponseDTO;
+import com.saj.api.shared.dto.PagenationResponseDTO;
 import org.springframework.data.domain.Page;
 
 public final class PageUtils {
     private PageUtils(){}
 
-    public static <T> PageResponseDTO<T> from(Page<T> page) {
-        return new PageResponseDTO<>(
+    public static <T> PagenationResponseDTO<T> from(Page<T> page) {
+        return new PagenationResponseDTO<>(
                 page.getContent(),
                 page.getTotalElements(),
                 page.getTotalPages(),

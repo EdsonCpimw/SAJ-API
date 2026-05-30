@@ -2,7 +2,7 @@ package com.saj.api.modules.users.docs;
 
 import com.saj.api.modules.users.controller.dtos.UserSearchDTO;
 import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
-import com.saj.api.shared.dto.PageResponseDTO;
+import com.saj.api.shared.dto.PagenationResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -14,10 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
-
-
-import java.util.List;
 
 
 @Tag(name = "Usuários", description = "Endpoints para usuários")
@@ -110,7 +106,7 @@ public interface UserControllerDocs {
             }
     )
     @GetMapping
-    ResponseEntity<PageResponseDTO<UsersResponseDTO>> findAllUsers(
+    ResponseEntity<PagenationResponseDTO<UsersResponseDTO>> findAllUsers(
             @Parameter(hidden = true) @ModelAttribute UserSearchDTO filter
 
     );
