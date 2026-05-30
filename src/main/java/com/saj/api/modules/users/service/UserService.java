@@ -1,42 +1,66 @@
 package com.saj.api.modules.users.service;
 
+import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
 import com.saj.api.modules.users.controller.dtos.UserSearchDTO;
 import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
 import com.saj.api.modules.users.domain.entities.User;
+import com.saj.api.modules.users.domain.mappers.RegisterUserMapper;
 import com.saj.api.modules.users.domain.mappers.UserMapper;
 import com.saj.api.modules.users.infrastructure.repository.UserRepository;
 import com.saj.api.modules.users.infrastructure.specifications.UserSpecification;
-import com.saj.api.shared.dto.PageResponseDTO;
+import com.saj.api.shared.dto.PagenationResponseDTO;
 import com.saj.api.shared.exceptions.BusinessException;
 import com.saj.api.shared.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private static final List<String> ALLOWED_SORT_FIELDS = List.of("name", "email", "phone");
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final CompanyService companyService;
+    private final RegisterUserMapper registerUserMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     public void validateEmailAlreadyExists(String email) {
         if (userRepository.existsByEmail(email)) {
+            log.warn("Tentatica de cadsatro com email já existente: {}", email);
             throw new BusinessException("Email já cadastrado");
         }
     }
 
     public void  saveUser(User user) {
         userRepository.save(user);
+    }
+
+    /*
+    * TODO: O id do escritório precisar vir do login do usuário
+    */
+    public void createUser(CreateUserDTO dto) {
+        log.info("Cadastrando usuário: {}", dto.email());
+        validateEmailAlreadyExists(dto.email());
+        var  id = UUID.fromString("45dd1158-8fd0-432c-a444-5148fe6c4b6e");
+        var company = companyService.companyFindById(id);
+        User user = registerUserMapper.toUserCreate(dto, company, passwordEncoder.encode(dto.password()));
+        this.saveUser(user);
+        log.info("Usuário criado com sucesso. email: {}", dto.email());
     }
 
     public List<UsersResponseDTO> findAllWithFilters(String companyName, String name, String email, String phone) {
@@ -53,7 +77,7 @@ public class UserService {
                 .toList();
     }
 
-    public PageResponseDTO<UsersResponseDTO> findAllUsersSearch(UserSearchDTO filter) {
+    public PagenationResponseDTO<UsersResponseDTO> findAllUsersSearch(UserSearchDTO filter) {
 
         Specification<User> spec = Specification
                 .where(UserSpecification.search(filter.search()))

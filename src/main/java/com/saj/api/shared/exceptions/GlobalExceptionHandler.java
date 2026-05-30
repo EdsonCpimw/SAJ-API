@@ -39,7 +39,6 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 null
         );
-
         return ResponseEntity.status(ex.getStatus()).body(response);
     }
 
@@ -53,5 +52,16 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleObjectNotFoundException(ObjectNotFoundException ex) {
+        ErrorResponseDTO response = new ErrorResponseDTO(
+                ex.getStatus().value(),
+                ex.getMessage(),
+                LocalDateTime.now(),
+                null
+        );
+        return ResponseEntity.status(ex.getStatus()).body(response);
     }
 }

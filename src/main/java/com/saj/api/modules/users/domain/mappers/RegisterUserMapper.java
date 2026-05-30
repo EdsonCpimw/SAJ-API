@@ -1,6 +1,7 @@
 package com.saj.api.modules.users.domain.mappers;
 
 import com.saj.api.modules.auth.controller.dtos.RegisterRequestDTO;
+import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
 import com.saj.api.modules.users.domain.entities.Company;
 import com.saj.api.modules.users.domain.entities.User;
 import com.saj.api.shared.utils.StringUtils;
@@ -21,5 +22,14 @@ public interface RegisterUserMapper {
     @Mapping(target = "password", source = "hashedPassword")
     @Mapping(target = "company", source = "company")
     @Mapping(target = "id", ignore = true)
-    User toUser(RegisterRequestDTO dto, Company company, String hashedPassword);
+    User toUserRegister(RegisterRequestDTO dto, Company company, String hashedPassword);
+
+
+    @Mapping(target = "name", source = "dto.name")
+    @Mapping(target = "email", source = "dto.email")
+    @Mapping(target = "phone", source = "dto.phone")
+    @Mapping(target = "password", source = "hashedPassword")
+    @Mapping(target = "company", source = "company")
+    @Mapping(target = "id", ignore = true)
+    User toUserCreate(CreateUserDTO dto, Company company, String hashedPassword);
 }

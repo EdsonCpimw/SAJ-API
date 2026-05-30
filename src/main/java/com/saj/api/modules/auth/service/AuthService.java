@@ -25,7 +25,7 @@ public class AuthService {
 
         Company company = registerUserMapper.toCompany(dto);
         var newCompany = companyService.createCompany(company);
-        User user = registerUserMapper.toUser(dto, newCompany, passwordEncoder.encode(dto.user().password()));
+        User user = registerUserMapper.toUserRegister(dto, newCompany, passwordEncoder.encode(dto.user().password()));
 
         this.userService.saveUser(user);
 
