@@ -205,7 +205,8 @@ public interface UserControllerDocs {
                                             value = """
                                                     {
                                                       "status": 200,
-                                                      "message": "Usuário atualizado com sucesso"
+                                                      "message": "Usuário atualizado com sucesso",
+                                                      "timestamp": "2026-05-31T17:12:31.547721"
                                                     }
                                                     """
                                     )
@@ -312,4 +313,56 @@ public interface UserControllerDocs {
     @GetMapping("/{id}")
     ResponseEntity<UsersResponseDTO> findUserById(@PathVariable UUID id);
 
+
+    @Operation(
+            summary = "Inativar ou ativar Usuário",
+            description = "Inativa ou ativa o usuário no sistema",
+            parameters = {
+                    @Parameter(
+                            name = "id",
+                            description = "ID do usuário a ser inativado/ativado",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            schema = @Schema(type = "string", format = "uuid", example = "45dd1158-8fd0-432c-a444-5148fe6c4b6e")
+                    )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Usuário inativado com sucesso",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SuccessResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 200,
+                                                      "message": "Usuário inativado com sucesso",
+                                                      "timestamp": "2026-05-31T17:12:31.547721"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Erro ineterno do servidor",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 500,
+                                                      "message": "Erro inerno do servidor",
+                                                      "timestamp": "2026-05-30T17:23:30.225002"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+            }
+    )
+    @PatchMapping("/{id}")
+    ResponseEntity<SuccessResponseDTO> toggleUser(@PathVariable UUID id);
 }

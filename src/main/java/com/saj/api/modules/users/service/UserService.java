@@ -9,6 +9,7 @@ import com.saj.api.modules.users.domain.mappers.UserMapper;
 import com.saj.api.modules.users.infrastructure.repository.UserRepository;
 import com.saj.api.modules.users.infrastructure.specifications.UserSpecification;
 import com.saj.api.shared.dto.PagenationResponseDTO;
+import com.saj.api.shared.dto.SuccessResponseDTO;
 import com.saj.api.shared.exceptions.BusinessException;
 import com.saj.api.shared.exceptions.ObjectNotFoundException;
 import com.saj.api.shared.utils.PageUtils;
@@ -22,7 +23,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.UUID;
@@ -128,9 +128,23 @@ public class UserService {
         });
     }
 
-    public UsersResponseDTO findUserById(@PathVariable UUID id) {
+    public UsersResponseDTO findUserById(UUID id) {
         log.info("Buscando usuário pelo id: {}", id);
         return userMapper.toUsersResponseDTO(findById(id));
+    }
+
+    /*
+    * TODO: Implementar a logica para verificar se id pertence a empresa do usuário logado
+    */
+    public SuccessResponseDTO toggleUserActive(UUID id) {
+        log.info("Alterando status do usuário id: {}", id);
+        var user = findById(id);
+        user.setActive(!user.isActive());
+        saveUser(user);
+
+        String status = user.isActive() ? "ativado" : "inativado";
+        log.info("Usuário {} com sucesso. id: {}", status, id);
+        return SuccessResponseDTO.of("Usuário " + status + " com sucesso");
     }
 
 }

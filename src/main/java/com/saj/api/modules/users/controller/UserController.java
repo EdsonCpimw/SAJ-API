@@ -47,4 +47,9 @@ public class UserController implements UserControllerDocs {
         var user = userService.findUserById(id);
         return ResponseEntity.ok(user);
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<SuccessResponseDTO> toggleUser(@PathVariable UUID id) {
+        return ResponseEntity.ok(userService.toggleUserActive(id));
+    }
 }
