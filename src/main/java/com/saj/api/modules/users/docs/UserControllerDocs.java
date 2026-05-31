@@ -1,19 +1,26 @@
 package com.saj.api.modules.users.docs;
 
+import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
+import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
 import com.saj.api.modules.users.controller.dtos.UserSearchDTO;
 import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
 import com.saj.api.shared.dto.PagenationResponseDTO;
+import com.saj.api.shared.dto.SuccessResponseDTO;
+import com.saj.api.shared.exceptions.dtos.ErrorResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.Parameter;
-import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.util.UUID;
 
 
 @Tag(name = "Usuários", description = "Endpoints para usuários")
@@ -111,5 +118,143 @@ public interface UserControllerDocs {
 
     );
 
+    @Operation(
+            summary = "Cadastrar Usuário",
+            description = "Cadastrar um novo usuário no sistema",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = CreateUserDTO.class)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Usuário cadastrado com sucesso"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Erro ao cadastrar usuário",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 400,
+                                                      "message": "Email já cadastrado",
+                                                      "timestamp": "2026-05-30T17:23:30.225002"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "422",
+                            description = "Violação de dados",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 422,
+                                                      "message": "Erro de validação",
+                                                      "timestamp": "2026-05-30T17:22:06.150131",
+                                                      "errors": [
+                                                        {
+                                                          "field": "name",
+                                                          "message": "Nome é obrigatório"
+                                                        }
+                                                      ]
+                                                    }
+                                                    """
+                                    )
+                            )
+                    )
+            }
+    )
+    @PostMapping
+    ResponseEntity<Void> createUser(@Valid  @RequestBody CreateUserDTO createUserDTO);
+
+    @Operation(
+            summary = "Atualizar Usuário",
+            description = "Atualizar um usuário no sistema",
+            parameters = {
+                    @Parameter(
+                            name = "id",
+                            description = "ID do usuário a ser atualizado",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            schema = @Schema(type = "string", format = "uuid", example = "45dd1158-8fd0-432c-a444-5148fe6c4b6e")
+                    )
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UpdateUserDTO.class)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Usuário atualizado com sucesso",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SuccessResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 200,
+                                                      "message": "Usuário atualizado com sucesso"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Erro ao atualizar usuário",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 400,
+                                                      "message": "Email já cadastrado",
+                                                      "timestamp": "2026-05-30T17:23:30.225002"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "422",
+                            description = "Violação de dados",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 422,
+                                                      "message": "Erro de validação",
+                                                      "timestamp": "2026-05-30T17:22:06.150131",
+                                                      "errors": [
+                                                        {
+                                                          "field": "name",
+                                                          "message": "Nome é obrigatório"
+                                                        }
+                                                      ]
+                                                    }
+                                                    """
+                                    )
+                            )
+                    )
+            }
+    )
+    @PutMapping("/{id}")
+    ResponseEntity<SuccessResponseDTO> updateUser(@PathVariable UUID id, @Valid @RequestBody UpdateUserDTO updateUserDTO);
 
 }

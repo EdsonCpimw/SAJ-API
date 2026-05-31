@@ -1,15 +1,16 @@
 package com.saj.api.modules.users.service;
 
 import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
+import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
 import com.saj.api.modules.users.controller.dtos.UserSearchDTO;
 import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
 import com.saj.api.modules.users.domain.entities.User;
-import com.saj.api.modules.users.domain.mappers.RegisterUserMapper;
 import com.saj.api.modules.users.domain.mappers.UserMapper;
 import com.saj.api.modules.users.infrastructure.repository.UserRepository;
 import com.saj.api.modules.users.infrastructure.specifications.UserSpecification;
 import com.saj.api.shared.dto.PagenationResponseDTO;
 import com.saj.api.shared.exceptions.BusinessException;
+import com.saj.api.shared.exceptions.ObjectNotFoundException;
 import com.saj.api.shared.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -33,9 +34,8 @@ public class UserService {
     private static final List<String> ALLOWED_SORT_FIELDS = List.of("name", "email", "phone");
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
     private final CompanyService companyService;
-    private final RegisterUserMapper registerUserMapper;
+    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -58,7 +58,7 @@ public class UserService {
         validateEmailAlreadyExists(dto.email());
         var  id = UUID.fromString("45dd1158-8fd0-432c-a444-5148fe6c4b6e");
         var company = companyService.companyFindById(id);
-        User user = registerUserMapper.toUserCreate(dto, company, passwordEncoder.encode(dto.password()));
+        User user = userMapper.toUserCreate(dto, company, passwordEncoder.encode(dto.password()));
         this.saveUser(user);
         log.info("Usuário criado com sucesso. email: {}", dto.email());
     }
@@ -108,5 +108,21 @@ public class UserService {
         return PageUtils.from(result);
     }
 
+    public void updateUser(UUID id, UpdateUserDTO dto) {
+        log.info("Atualizando usuário... id: {}", id);
+
+        User oldUser = userRepository.findById(id).orElseThrow(() -> {
+            log.warn("Usuário não encontrado! id: {}", id);
+            return new ObjectNotFoundException("Usuário não encontrado id: " + id);
+        });
+
+        if(!oldUser.getEmail().equals(dto.email())) {
+            this.validateEmailAlreadyExists(dto.email());
+        }
+        userMapper.updateUserFromDTO(dto, oldUser);
+        userRepository.save(oldUser);
+
+        log.info("Usuário atualizado com sucesso id: {}", id);
+    }
 
 }
