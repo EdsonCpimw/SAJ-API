@@ -41,4 +41,10 @@ public class UserController implements UserControllerDocs {
         this.userService.updateUser(id, updateUserDTO);
         return ResponseEntity.ok(SuccessResponseDTO.of("Usuário atualizado com sucesso"));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UsersResponseDTO> findUserById(@PathVariable UUID id) {
+        var user = userService.findUserById(id);
+        return ResponseEntity.ok(user);
+    }
 }

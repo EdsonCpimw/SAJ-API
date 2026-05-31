@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.UUID;
@@ -110,12 +111,7 @@ public class UserService {
 
     public void updateUser(UUID id, UpdateUserDTO dto) {
         log.info("Atualizando usuário... id: {}", id);
-
-        User oldUser = userRepository.findById(id).orElseThrow(() -> {
-            log.warn("Usuário não encontrado! id: {}", id);
-            return new ObjectNotFoundException("Usuário não encontrado id: " + id);
-        });
-
+        var oldUser = findById(id);
         if(!oldUser.getEmail().equals(dto.email())) {
             this.validateEmailAlreadyExists(dto.email());
         }
@@ -123,6 +119,18 @@ public class UserService {
         userRepository.save(oldUser);
 
         log.info("Usuário atualizado com sucesso id: {}", id);
+    }
+
+    public User findById(UUID id) {
+        return userRepository.findById(id).orElseThrow(() -> {
+            log.warn("Usuário não encontrado! id: {}", id);
+            return new ObjectNotFoundException("Usuário não encontrado");
+        });
+    }
+
+    public UsersResponseDTO findUserById(@PathVariable UUID id) {
+        log.info("Buscando usuário pelo id: {}", id);
+        return userMapper.toUsersResponseDTO(findById(id));
     }
 
 }

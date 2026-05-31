@@ -9,7 +9,6 @@ import com.saj.api.shared.dto.SuccessResponseDTO;
 import com.saj.api.shared.exceptions.dtos.ErrorResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -256,5 +255,61 @@ public interface UserControllerDocs {
     )
     @PutMapping("/{id}")
     ResponseEntity<SuccessResponseDTO> updateUser(@PathVariable UUID id, @Valid @RequestBody UpdateUserDTO updateUserDTO);
+
+
+    @Operation(
+            summary = "Busrcar Usuário",
+            description = "Buscar um usuário no sistema",
+            parameters = {
+                    @Parameter(
+                            name = "id",
+                            description = "ID do usuário",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            schema = @Schema(type = "string", format = "uuid", example = "45dd1158-8fd0-432c-a444-5148fe6c4b6e")
+                    )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Dados do usuário",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SuccessResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "id": "40976e03-ead4-400e-a27c-c6630cffa64b",
+                                                      "name": "Teste",
+                                                      "email": "edson@gmail.com",
+                                                      "phone": "(26) 37519-0748",
+                                                      "active": true,
+                                                      "companyName": "Escrito Edson Advogados"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Usuário não encontrado",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 404,
+                                                      "message": "Usuário não encontrado",
+                                                      "timestamp": "2026-05-30T17:23:30.225002"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+            }
+    )
+    @GetMapping("/{id}")
+    ResponseEntity<UsersResponseDTO> findUserById(@PathVariable UUID id);
 
 }
