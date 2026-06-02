@@ -8,7 +8,7 @@ import com.saj.api.modules.users.domain.entities.User;
 import com.saj.api.modules.users.domain.mappers.UserMapper;
 import com.saj.api.modules.users.infrastructure.repository.UserRepository;
 import com.saj.api.modules.users.infrastructure.specifications.UserSpecification;
-import com.saj.api.shared.dto.PagenationResponseDTO;
+import com.saj.api.shared.dto.PaginationResponseDTO;
 import com.saj.api.shared.dto.SuccessResponseDTO;
 import com.saj.api.shared.exceptions.BusinessException;
 import com.saj.api.shared.exceptions.ObjectNotFoundException;
@@ -78,7 +78,7 @@ public class UserService {
                 .toList();
     }
 
-    public PagenationResponseDTO<UsersResponseDTO> findAllUsersSearch(UserSearchDTO filter) {
+    public PaginationResponseDTO<UsersResponseDTO> findAllUsersSearch(UserSearchDTO filter) {
 
         Specification<User> spec = Specification
                 .where(UserSpecification.search(filter.search()))

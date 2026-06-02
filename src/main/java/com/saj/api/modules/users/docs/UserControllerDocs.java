@@ -4,7 +4,7 @@ import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
 import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
 import com.saj.api.modules.users.controller.dtos.UserSearchDTO;
 import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
-import com.saj.api.shared.dto.PagenationResponseDTO;
+import com.saj.api.shared.dto.PaginationResponseDTO;
 import com.saj.api.shared.dto.SuccessResponseDTO;
 import com.saj.api.shared.exceptions.dtos.ErrorResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,7 +62,11 @@ public interface UserControllerDocs {
                             name = "sortBy",
                             description = "Campo utilizado para ordenação",
                             in = ParameterIn.QUERY,
-                            schema = @Schema(type = "string", defaultValue = "name")
+                            schema = @Schema(
+                                    type = "string",
+                                    allowableValues = {"name", "email", "phone"},
+                                    defaultValue = "name"
+                            )
                     ),
 
                     @Parameter(
@@ -85,7 +89,7 @@ public interface UserControllerDocs {
                                     examples = @ExampleObject(
                                             value = """
                         {
-                          "content": [
+                          "data": [
                             {
                               "id": "b9f44c5f-fc9a-4d75-bf7d-cbde6b3c83e1",
                               "name": "João Silva",
@@ -112,7 +116,7 @@ public interface UserControllerDocs {
             }
     )
     @GetMapping
-    ResponseEntity<PagenationResponseDTO<UsersResponseDTO>> findAllUsers(
+    ResponseEntity<PaginationResponseDTO<UsersResponseDTO>> findAllUsers(
             @Parameter(hidden = true) @ModelAttribute UserSearchDTO filter
 
     );

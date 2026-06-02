@@ -6,7 +6,7 @@ import com.saj.api.modules.users.controller.dtos.UserSearchDTO;
 import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
 import com.saj.api.modules.users.docs.UserControllerDocs;
 import com.saj.api.modules.users.service.UserService;
-import com.saj.api.shared.dto.PagenationResponseDTO;
+import com.saj.api.shared.dto.PaginationResponseDTO;
 import com.saj.api.shared.dto.SuccessResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class UserController implements UserControllerDocs {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<PagenationResponseDTO<UsersResponseDTO>> findAllUsers(
+    public ResponseEntity<PaginationResponseDTO<UsersResponseDTO>> findAllUsers(
             @ModelAttribute UserSearchDTO filter
             ) {
         return ResponseEntity.ok(userService.findAllUsersSearch(filter));

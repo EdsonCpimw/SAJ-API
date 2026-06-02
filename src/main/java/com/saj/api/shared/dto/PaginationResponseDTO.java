@@ -2,7 +2,7 @@ package com.saj.api.shared.dto;
 
 import java.util.List;
 
-public record PagenationResponseDTO<T>(
+public record PaginationResponseDTO<T>(
         List<T> data,
         long totalElements,
         int totalPages,
