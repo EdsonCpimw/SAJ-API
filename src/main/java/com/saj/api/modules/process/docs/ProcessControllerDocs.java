@@ -1,11 +1,14 @@
 package com.saj.api.modules.process.docs;
 
+import com.saj.api.modules.process.controller.dtos.CreateProcessDTO;
 import com.saj.api.modules.process.controller.dtos.ProcessResponseDTO;
 import com.saj.api.modules.process.controller.dtos.ProcessSearchDTO;
 import com.saj.api.modules.process.domain.enums.LegalArea;
 import com.saj.api.modules.process.domain.enums.ProcessPriority;
 import com.saj.api.modules.process.domain.enums.ProcessStatus;
+import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
 import com.saj.api.shared.dto.PaginationResponseDTO;
+import com.saj.api.shared.exceptions.dtos.ErrorResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -14,9 +17,12 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Processos", description = "Endpoints de processos")
 public interface ProcessControllerDocs {
@@ -129,4 +135,80 @@ public interface ProcessControllerDocs {
     )
     @GetMapping
     ResponseEntity<PaginationResponseDTO<ProcessResponseDTO>> findAllProcess(@Parameter(hidden = true) @ModelAttribute ProcessSearchDTO filer);
+
+    @Operation(
+            summary = "Cadastrar Processo",
+            description = "Cadastrar um novo processo no sistema",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = CreateProcessDTO.class)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Processo cadastrado com sucesso"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Erro ao cadastrar processo",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 404,
+                                                      "message": "Usuário não encontrado",
+                                                      "timestamp": "2026-06-02T18:47:59.191673"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "422",
+                            description = "Violação de dados",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 422,
+                                                      "message": "Erro de validação",
+                                                      "timestamp": "2026-05-30T17:22:06.150131",
+                                                      "errors": [
+                                                        {
+                                                          "field": "numberProcess",
+                                                          "message": "Numero do processo é obrigatório"
+                                                        }
+                                                      ]
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Erro ao cadastrar processo",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 500,
+                                                      "message": "Erro interno no servidor",
+                                                      "timestamp": "2026-06-02T18:44:41.716812"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+            }
+    )
+    @PostMapping
+    public ResponseEntity<Void> createProcess(@Valid @RequestBody CreateProcessDTO createProcessDTO);
 }

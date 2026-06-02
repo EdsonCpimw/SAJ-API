@@ -1,11 +1,16 @@
 package com.saj.api.modules.process.service;
 
+import com.saj.api.modules.process.controller.dtos.CreateProcessDTO;
 import com.saj.api.modules.process.controller.dtos.ProcessResponseDTO;
 import com.saj.api.modules.process.controller.dtos.ProcessSearchDTO;
 import com.saj.api.modules.process.domain.entities.Process;
 import com.saj.api.modules.process.domain.mappers.ProcessMapper;
 import com.saj.api.modules.process.infrastructure.repository.ProcessRepository;
 import com.saj.api.modules.process.infrastructure.specifications.ProcessSpecification;
+import com.saj.api.modules.users.domain.entities.Company;
+import com.saj.api.modules.users.domain.entities.User;
+import com.saj.api.modules.users.service.CompanyService;
+import com.saj.api.modules.users.service.UserService;
 import com.saj.api.shared.dto.PaginationResponseDTO;
 import com.saj.api.shared.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +35,9 @@ public class ProcessService {
 
     private final ProcessRepository processRepository;
     private final ProcessMapper processMapper;
+    private final CompanyService companyService;
+    private final UserService userService;
+
 
     public PaginationResponseDTO<ProcessResponseDTO> findAllProcessSearch(ProcessSearchDTO filter) {
         log.info("Iniciando consulta de processos...");
@@ -61,6 +70,22 @@ public class ProcessService {
                 .map(processMapper::toProcessResponseDTO);
 
         return PageUtils.from(result);
+    }
 
+
+    /*
+    * TODO: Incluir no cadastro o escritorio_id e o criado_por com os dados do usuário logado.
+    */
+    public void createProcess(CreateProcessDTO dto) {
+        log.info("Iniciando cadastro de um processo...");
+        var companyId = UUID.fromString("45dd1158-8fd0-432c-a444-5148fe6c4b6e");
+        var createdBy = UUID.fromString("40976e03-ead4-400e-a27c-c6630cffa64c");
+
+        Company company = companyService.companyFindById(companyId);
+        User user = userService.findById(createdBy);
+
+        Process newProcess = processMapper.toProcessCreate(dto, company, user);
+        processRepository.save(newProcess);
+        log.info("Processo criado com sucesso. numero do processo: {}", dto.numberProcess());
     }
 }
