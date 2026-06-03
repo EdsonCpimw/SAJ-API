@@ -263,7 +263,7 @@ public interface UserControllerDocs {
 
 
     @Operation(
-            summary = "Busrcar Usuário",
+            summary = "Buscar Usuário",
             description = "Buscar um usuário no sistema",
             parameters = {
                     @Parameter(

@@ -3,6 +3,7 @@ package com.saj.api.modules.process.service;
 import com.saj.api.modules.process.controller.dtos.CreateProcessDTO;
 import com.saj.api.modules.process.controller.dtos.ProcessResponseDTO;
 import com.saj.api.modules.process.controller.dtos.ProcessSearchDTO;
+import com.saj.api.modules.process.controller.dtos.UpdateProcessDTO;
 import com.saj.api.modules.process.domain.entities.Process;
 import com.saj.api.modules.process.domain.mappers.ProcessMapper;
 import com.saj.api.modules.process.infrastructure.repository.ProcessRepository;
@@ -12,6 +13,7 @@ import com.saj.api.modules.users.domain.entities.User;
 import com.saj.api.modules.users.service.CompanyService;
 import com.saj.api.modules.users.service.UserService;
 import com.saj.api.shared.dto.PaginationResponseDTO;
+import com.saj.api.shared.exceptions.ObjectNotFoundException;
 import com.saj.api.shared.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -72,6 +74,13 @@ public class ProcessService {
         return PageUtils.from(result);
     }
 
+    public Process findById(UUID id) {
+        return processRepository.findById(id).orElseThrow(() -> {
+            log.warn("Processo não encontrado. id: {}", id);
+            return new ObjectNotFoundException("Processo não encontrado");
+        });
+    }
+
 
     /*
     * TODO: Incluir no cadastro o escritorio_id e o criado_por com os dados do usuário logado.
@@ -87,5 +96,19 @@ public class ProcessService {
         Process newProcess = processMapper.toProcessCreate(dto, company, user);
         processRepository.save(newProcess);
         log.info("Processo criado com sucesso. numero do processo: {}", dto.numberProcess());
+    }
+
+
+    public void updateProcess(UUID id, UpdateProcessDTO dto) {
+        log.info("Iniciando atualização de processo... id: {}", id);
+        var oldProcess = findById(id);
+        processMapper.updateProcessFromDTO(dto, oldProcess);
+        processRepository.save(oldProcess);
+        log.info("Processo atualizado com sucesso. id: {}", id);
+    }
+
+    public ProcessResponseDTO findProcessById(UUID id) {
+        log.info("Buscando processo pelo id: {}", id);
+        return processMapper.toProcessResponseDTO(findById(id));
     }
 }

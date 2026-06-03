@@ -3,11 +3,14 @@ package com.saj.api.modules.process.docs;
 import com.saj.api.modules.process.controller.dtos.CreateProcessDTO;
 import com.saj.api.modules.process.controller.dtos.ProcessResponseDTO;
 import com.saj.api.modules.process.controller.dtos.ProcessSearchDTO;
+import com.saj.api.modules.process.controller.dtos.UpdateProcessDTO;
 import com.saj.api.modules.process.domain.enums.LegalArea;
 import com.saj.api.modules.process.domain.enums.ProcessPriority;
 import com.saj.api.modules.process.domain.enums.ProcessStatus;
 import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
+import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
 import com.saj.api.shared.dto.PaginationResponseDTO;
+import com.saj.api.shared.dto.SuccessResponseDTO;
 import com.saj.api.shared.exceptions.dtos.ErrorResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,10 +22,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Tag(name = "Processos", description = "Endpoints de processos")
 public interface ProcessControllerDocs {
@@ -210,5 +212,144 @@ public interface ProcessControllerDocs {
             }
     )
     @PostMapping
-    public ResponseEntity<Void> createProcess(@Valid @RequestBody CreateProcessDTO createProcessDTO);
+    ResponseEntity<Void> createProcess(@Valid @RequestBody CreateProcessDTO createProcessDTO);
+
+    @Operation(
+            summary = "Atualizar Processo",
+            description = "Atualizar um processo no sistema",
+            parameters = {
+                    @Parameter(
+                            name = "id",
+                            description = "ID do processo a ser atualizado",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            schema = @Schema(type = "string", format = "uuid", example = "6618e55a-1a00-464a-ad65-f109752ed57f")
+                    )
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UpdateProcessDTO.class)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Processo atualizado com sucesso",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SuccessResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 200,
+                                                      "message": "Processo atualizado com sucesso",
+                                                      "timestamp": "2026-05-31T17:12:31.547721"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Erro ao atualizar processo",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 400,
+                                                      "message": "Email já cadastrado",
+                                                      "timestamp": "2026-05-30T17:23:30.225002"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "422",
+                            description = "Violação de dados",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 422,
+                                                      "message": "Erro de validação",
+                                                      "timestamp": "2026-05-30T17:22:06.150131",
+                                                      "errors": [
+                                                        {
+                                                          "field": "name",
+                                                          "message": "Nome é obrigatório"
+                                                        }
+                                                      ]
+                                                    }
+                                                    """
+                                    )
+                            )
+                    )
+            }
+    )
+    @PutMapping("/{id}")
+    ResponseEntity<SuccessResponseDTO> updateProcess(@PathVariable UUID id, @Valid @RequestBody UpdateProcessDTO updateProcessDTO);
+
+    @Operation(
+            summary = "Buscar Processo",
+            description = "Buscar um processo no sistema",
+            parameters = {
+                    @Parameter(
+                            name = "id",
+                            description = "ID do processo",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            schema = @Schema(type = "string", format = "uuid", example = "45dd1158-8fd0-432c-a444-5148fe6c4b6e")
+                    )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Dados do processo",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SuccessResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "id": "21081643-a670-4dd6-b671-3a568a41b6e5",
+                                                      "numberProcess": "7018452-34.2026.8.19.0023",
+                                                      "title": "Ação para impostos compra automovel",
+                                                      "status": "IN_PROGRESS",
+                                                      "legalArea": "LABOR",
+                                                      "courtDivision": "2ª Vara Cível de Campinas",
+                                                      "court": "TJSP",
+                                                      "priority": "URGENT",
+                                                      "createdAt": "2026-06-02T22:43:18.092893"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Usuário não encontrado",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 404,
+                                                      "message": "Processo não encontrado",
+                                                      "timestamp": "2026-05-30T17:23:30.225002"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+            }
+    )
+    @GetMapping("/{id}")
+    ResponseEntity<ProcessResponseDTO> findProcessById(@PathVariable UUID id);
 }
