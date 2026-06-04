@@ -1,9 +1,6 @@
 package com.saj.api.modules.process.service;
 
-import com.saj.api.modules.process.controller.dtos.CreateProcessDTO;
-import com.saj.api.modules.process.controller.dtos.ProcessResponseDTO;
-import com.saj.api.modules.process.controller.dtos.ProcessSearchDTO;
-import com.saj.api.modules.process.controller.dtos.UpdateProcessDTO;
+import com.saj.api.modules.process.controller.dtos.process.*;
 import com.saj.api.modules.process.domain.entities.Process;
 import com.saj.api.modules.process.domain.mappers.ProcessMapper;
 import com.saj.api.modules.process.infrastructure.repository.ProcessRepository;
@@ -110,5 +107,11 @@ public class ProcessService {
     public ProcessResponseDTO findProcessById(UUID id) {
         log.info("Buscando processo pelo id: {}", id);
         return processMapper.toProcessResponseDTO(findById(id));
+    }
+
+    public void updateProcessStatusById(UUID id, UpadateStatusProcessDTO dto) {
+        var process = findById(id);
+        var newProcess = processMapper.updateProcessStatus(dto, process);
+        processRepository.save(newProcess);
     }
 }

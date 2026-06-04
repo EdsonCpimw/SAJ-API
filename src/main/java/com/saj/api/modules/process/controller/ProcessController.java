@@ -1,9 +1,6 @@
 package com.saj.api.modules.process.controller;
 
-import com.saj.api.modules.process.controller.dtos.CreateProcessDTO;
-import com.saj.api.modules.process.controller.dtos.ProcessResponseDTO;
-import com.saj.api.modules.process.controller.dtos.ProcessSearchDTO;
-import com.saj.api.modules.process.controller.dtos.UpdateProcessDTO;
+import com.saj.api.modules.process.controller.dtos.process.*;
 import com.saj.api.modules.process.docs.ProcessControllerDocs;
 import com.saj.api.modules.process.service.ProcessService;
 import com.saj.api.shared.dto.PaginationResponseDTO;
@@ -36,7 +33,6 @@ public class ProcessController implements ProcessControllerDocs {
 
     @PutMapping("/{id}")
     public ResponseEntity<SuccessResponseDTO> updateProcess(UUID id, @Valid @RequestBody UpdateProcessDTO updateProcessDTO) {
-        // chamar o service
         processService.updateProcess(id, updateProcessDTO);
         return ResponseEntity.ok(SuccessResponseDTO.of("Processo atualizado com sucesso"));
     }
@@ -45,5 +41,11 @@ public class ProcessController implements ProcessControllerDocs {
     public ResponseEntity<ProcessResponseDTO> findProcessById(@PathVariable UUID id) {
         var process = processService.findProcessById(id);
         return ResponseEntity.ok(process);
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<SuccessResponseDTO> updateProcessStatusById(@PathVariable UUID id, UpadateStatusProcessDTO dto) {
+        processService.updateProcessStatusById(id, dto);
+        return ResponseEntity.ok(SuccessResponseDTO.of("Status do processo atualizado com sucesso"));
     }
 }

@@ -30,11 +30,8 @@ public class ProcessMovements {
     private String title;
     @Column(name = "descricao")
     private String description;
-    @Column(name = "visivel_cliente", nullable = false)
-    private boolean isVisibleToClient;
     @Column(name = "importante", nullable = false)
     private boolean isImportant;
-    @CreationTimestamp
     @Column(name = "data_evento", nullable = false, updatable = false)
     private LocalDateTime dateEvent;
     @CreationTimestamp

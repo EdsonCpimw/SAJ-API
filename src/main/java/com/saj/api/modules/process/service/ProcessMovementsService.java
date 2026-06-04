@@ -1,9 +1,12 @@
 package com.saj.api.modules.process.service;
 
+import com.saj.api.modules.process.controller.dtos.movements.CreateMovementsDTO;
 import com.saj.api.modules.process.controller.dtos.movements.ProcessMovementsResponseDTO;
 import com.saj.api.modules.process.domain.entities.ProcessMovements;
 import com.saj.api.modules.process.domain.mappers.ProcessMovementsMapper;
 import com.saj.api.modules.process.infrastructure.repository.ProcessMovementsRepository;
+import com.saj.api.modules.users.domain.entities.User;
+import com.saj.api.modules.users.service.UserService;
 import com.saj.api.shared.exceptions.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,6 +23,8 @@ public class ProcessMovementsService {
 
     private final ProcessMovementsRepository processMovementsRepository;
     private final ProcessMovementsMapper processMovementsMapper;
+    private final ProcessService processService;
+    private final UserService userService;
 
     public List<ProcessMovementsResponseDTO> findMovementsByProcessId(UUID id) {
         List<ProcessMovements> movements = processMovementsRepository.findByProcessId(id);
@@ -30,5 +35,19 @@ public class ProcessMovementsService {
         return movements.stream()
                 .map(processMovementsMapper::toProcessMovementsResponseDTO)
                 .toList();
+    }
+
+
+    /*
+    * TODO: Verificar a possibiliade de criar uma validação do usuário logado
+    */
+    public void createProcessMovement(CreateMovementsDTO dto) {
+        log.info("Iniciando o cadastro da movimentação de procesos...");
+        var process = processService.findById(dto.processId());
+        var createdBy = UUID.fromString("40976e03-ead4-400e-a27c-c6630cffa64c");
+        User user = userService.findById(createdBy);
+        ProcessMovements newProcessMovement = processMovementsMapper.toCreateProcessMovement(dto, process, user);
+        processMovementsRepository.save(newProcessMovement);
+        log.info("Movimentação de processo criada com sucesso!");
     }
 }

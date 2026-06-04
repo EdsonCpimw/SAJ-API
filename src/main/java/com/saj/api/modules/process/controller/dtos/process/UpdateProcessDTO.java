@@ -1,4 +1,4 @@
-package com.saj.api.modules.process.controller.dtos;
+package com.saj.api.modules.process.controller.dtos.process;
 
 import com.saj.api.modules.process.domain.enums.LegalArea;
 import com.saj.api.modules.process.domain.enums.ProcessPriority;

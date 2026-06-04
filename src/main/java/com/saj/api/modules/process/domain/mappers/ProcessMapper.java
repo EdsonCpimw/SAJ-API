@@ -1,8 +1,9 @@
 package com.saj.api.modules.process.domain.mappers;
 
-import com.saj.api.modules.process.controller.dtos.CreateProcessDTO;
-import com.saj.api.modules.process.controller.dtos.ProcessResponseDTO;
-import com.saj.api.modules.process.controller.dtos.UpdateProcessDTO;
+import com.saj.api.modules.process.controller.dtos.process.CreateProcessDTO;
+import com.saj.api.modules.process.controller.dtos.process.ProcessResponseDTO;
+import com.saj.api.modules.process.controller.dtos.process.UpadateStatusProcessDTO;
+import com.saj.api.modules.process.controller.dtos.process.UpdateProcessDTO;
 import com.saj.api.modules.process.domain.entities.Process;
 import com.saj.api.modules.users.domain.entities.Company;
 import com.saj.api.modules.users.domain.entities.User;
@@ -22,4 +23,6 @@ public interface ProcessMapper {
     Process toProcessCreate(CreateProcessDTO dto, Company company, User user);
 
     void updateProcessFromDTO(UpdateProcessDTO dto, @MappingTarget Process process);
+
+    Process updateProcessStatus(UpadateStatusProcessDTO dto, @MappingTarget Process process);
 }

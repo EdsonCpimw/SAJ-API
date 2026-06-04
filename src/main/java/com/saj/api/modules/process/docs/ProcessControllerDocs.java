@@ -1,9 +1,6 @@
 package com.saj.api.modules.process.docs;
 
-import com.saj.api.modules.process.controller.dtos.CreateProcessDTO;
-import com.saj.api.modules.process.controller.dtos.ProcessResponseDTO;
-import com.saj.api.modules.process.controller.dtos.ProcessSearchDTO;
-import com.saj.api.modules.process.controller.dtos.UpdateProcessDTO;
+import com.saj.api.modules.process.controller.dtos.process.*;
 import com.saj.api.modules.process.domain.enums.LegalArea;
 import com.saj.api.modules.process.domain.enums.ProcessPriority;
 import com.saj.api.modules.process.domain.enums.ProcessStatus;
@@ -148,7 +145,7 @@ public interface ProcessControllerDocs {
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "Processo cadastrado com sucesso"
+                            description = "Criado"
                     ),
                     @ApiResponse(
                             responseCode = "400",
@@ -351,4 +348,86 @@ public interface ProcessControllerDocs {
     )
     @GetMapping("/{id}")
     ResponseEntity<ProcessResponseDTO> findProcessById(@PathVariable UUID id);
+
+
+    @Operation(
+            summary = "Atualizar status do Processo",
+            description = "Atualizar o status do processo no sistema",
+            parameters = {
+                    @Parameter(
+                            name = "id",
+                            description = "ID do processo a ser atualizado",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            schema = @Schema(type = "string", format = "uuid", example = "6618e55a-1a00-464a-ad65-f109752ed57f")
+                    )
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UpadateStatusProcessDTO.class)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Atualização do status com processo",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SuccessResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 200,
+                                                      "message": "Status do processo atualizado com sucesso",
+                                                      "timestamp": "2026-05-31T17:12:31.547721"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "422",
+                            description = "Violação de dados",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 422,
+                                                      "message": "Erro de validação",
+                                                      "timestamp": "2026-05-30T17:22:06.150131",
+                                                      "errors": [
+                                                        {
+                                                          "field": "status",
+                                                          "message": "Status é obrigatório"
+                                                        }
+                                                      ]
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Erro ao atualizar status do processo",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 500,
+                                                      "message": "Erro interno no servidor",
+                                                      "timestamp": "2026-05-30T17:23:30.225002"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    )
+            }
+    )
+    @PatchMapping("/{id}")
+    ResponseEntity<SuccessResponseDTO> updateProcessStatusById(@PathVariable UUID id, UpadateStatusProcessDTO dto);
 }
