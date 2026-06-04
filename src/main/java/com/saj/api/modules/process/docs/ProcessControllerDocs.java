@@ -7,8 +7,6 @@ import com.saj.api.modules.process.controller.dtos.UpdateProcessDTO;
 import com.saj.api.modules.process.domain.enums.LegalArea;
 import com.saj.api.modules.process.domain.enums.ProcessPriority;
 import com.saj.api.modules.process.domain.enums.ProcessStatus;
-import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
-import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
 import com.saj.api.shared.dto.PaginationResponseDTO;
 import com.saj.api.shared.dto.SuccessResponseDTO;
 import com.saj.api.shared.exceptions.dtos.ErrorResponseDTO;
@@ -320,6 +318,7 @@ public interface ProcessControllerDocs {
                                                       "id": "21081643-a670-4dd6-b671-3a568a41b6e5",
                                                       "numberProcess": "7018452-34.2026.8.19.0023",
                                                       "title": "Ação para impostos compra automovel",
+                                                      "description": "Ação para impostos devolvidos na compra de um automovel",
                                                       "status": "IN_PROGRESS",
                                                       "legalArea": "LABOR",
                                                       "courtDivision": "2ª Vara Cível de Campinas",
@@ -333,7 +332,7 @@ public interface ProcessControllerDocs {
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Usuário não encontrado",
+                            description = "Processo não encontrado",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = ErrorResponseDTO.class),

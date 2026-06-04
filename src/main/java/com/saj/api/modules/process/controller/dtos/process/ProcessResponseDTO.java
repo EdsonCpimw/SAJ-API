@@ -11,6 +11,7 @@ public record ProcessResponseDTO(
         UUID id,
         String numberProcess,
         String title,
+        String description,
         ProcessStatus status,
         LegalArea legalArea,
         String courtDivision,
