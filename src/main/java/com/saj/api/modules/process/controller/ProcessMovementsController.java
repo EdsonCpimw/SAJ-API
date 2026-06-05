@@ -15,12 +15,12 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/process/movements")
+@RequestMapping(value = "/api/v1/process-movements")
 public class ProcessMovementsController implements ProcessMovementsControllerDocs {
 
     private final ProcessMovementsService processMovementsService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/process/{id}")
     public ResponseEntity<List<ProcessMovementsResponseDTO>> findMovementsById(@PathVariable UUID id) {
         var processMovements = processMovementsService.findMovementsByProcessId(id);
         return ResponseEntity.ok(processMovements);

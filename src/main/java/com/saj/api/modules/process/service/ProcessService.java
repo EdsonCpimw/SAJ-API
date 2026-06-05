@@ -110,8 +110,10 @@ public class ProcessService {
     }
 
     public void updateProcessStatusById(UUID id, UpadateStatusProcessDTO dto) {
+        log.info("Iniciando a atualização do status do processo... id: {}", id);
         var process = findById(id);
-        var newProcess = processMapper.updateProcessStatus(dto, process);
-        processRepository.save(newProcess);
+        var newStatusProcess = processMapper.toUpdateProcessStatus(dto, process);
+        processRepository.save(newStatusProcess);
+        log.info("Status do processo atualizado com sucesso. id: {}", id);
     }
 }

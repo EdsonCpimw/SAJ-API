@@ -24,5 +24,5 @@ public interface ProcessMapper {
 
     void updateProcessFromDTO(UpdateProcessDTO dto, @MappingTarget Process process);
 
-    Process updateProcessStatus(UpadateStatusProcessDTO dto, @MappingTarget Process process);
+    Process toUpdateProcessStatus(UpadateStatusProcessDTO dto, @MappingTarget Process process);
 }

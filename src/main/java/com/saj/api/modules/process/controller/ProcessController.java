@@ -44,7 +44,7 @@ public class ProcessController implements ProcessControllerDocs {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<SuccessResponseDTO> updateProcessStatusById(@PathVariable UUID id, UpadateStatusProcessDTO dto) {
+    public ResponseEntity<SuccessResponseDTO> updateProcessStatusById(@PathVariable UUID id, @RequestBody UpadateStatusProcessDTO dto) {
         processService.updateProcessStatusById(id, dto);
         return ResponseEntity.ok(SuccessResponseDTO.of("Status do processo atualizado com sucesso"));
     }
