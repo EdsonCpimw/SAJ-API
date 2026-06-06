@@ -3,10 +3,12 @@ package com.saj.api.modules.process.service;
 import com.saj.api.modules.process.controller.dtos.movements.CreateMovementsDTO;
 import com.saj.api.modules.process.controller.dtos.movements.ProcessMovementsResponseDTO;
 import com.saj.api.modules.process.domain.entities.ProcessMovements;
+import com.saj.api.modules.process.domain.enums.ProcessStatus;
 import com.saj.api.modules.process.domain.mappers.ProcessMovementsMapper;
 import com.saj.api.modules.process.infrastructure.repository.ProcessMovementsRepository;
 import com.saj.api.modules.users.domain.entities.User;
 import com.saj.api.modules.users.service.UserService;
+import com.saj.api.shared.exceptions.BusinessException;
 import com.saj.api.shared.exceptions.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -44,6 +46,10 @@ public class ProcessMovementsService {
     public void createProcessMovement(CreateMovementsDTO dto) {
         log.info("Iniciando o cadastro da movimentação de procesos...");
         var process = processService.findById(dto.processId());
+        if(process.getStatus() == ProcessStatus.CANCELLED || process.getStatus() == ProcessStatus.FINISHED) {
+            log.warn("Tentativa de Adicionar movimentação em processo finalizado/cancelado bloqueada. processId: {}", process.getId());
+            throw new BusinessException("Não é possivel adicionar movimentação em processo finalizado ou cancelado");
+        }
         var createdBy = UUID.fromString("40976e03-ead4-400e-a27c-c6630cffa64c");
         User user = userService.findById(createdBy);
         ProcessMovements newProcessMovement = processMovementsMapper.toCreateProcessMovement(dto, process, user);
