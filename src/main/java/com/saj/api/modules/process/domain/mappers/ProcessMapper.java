@@ -14,6 +14,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ProcessMapper {
 
+    @Mapping(target = "hasMovements", expression = "java(process.hasMovements())")
     ProcessResponseDTO toProcessResponseDTO(Process process);
 
     @Mapping(target = "id", ignore = true)

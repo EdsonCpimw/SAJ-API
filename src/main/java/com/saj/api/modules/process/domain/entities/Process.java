@@ -13,6 +13,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -58,4 +60,11 @@ public class Process {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "atribuido_para")
     private User assignerdTo;
+
+    @OneToMany(mappedBy = "process", fetch = FetchType.LAZY)
+    private List<ProcessMovements> processMovements = new ArrayList<>();
+
+    public boolean hasMovements() {
+        return processMovements != null && !processMovements.isEmpty();
+    }
 }

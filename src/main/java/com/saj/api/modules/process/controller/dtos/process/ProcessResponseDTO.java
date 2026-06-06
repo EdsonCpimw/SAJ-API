@@ -17,5 +17,6 @@ public record ProcessResponseDTO(
         String courtDivision,
         String court,
         ProcessPriority priority,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        boolean hasMovements
 ) {}
