@@ -109,7 +109,8 @@ public interface ProcessControllerDocs {
                               "courtDivision": "2ª Vara do Trabalho de São Paulo",
                               "court": "TRT-2",
                               "priority": "MEDIUM",
-                              "createdAt": "2024-01-15T10:30:00"
+                              "createdAt": "2024-01-15T10:30:00",
+                              "hasMovements": true
                             }
                           ],
                           "totalElements": 150,

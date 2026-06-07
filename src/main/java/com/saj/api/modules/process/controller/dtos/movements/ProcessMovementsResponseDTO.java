@@ -12,5 +12,6 @@ public record ProcessMovementsResponseDTO(
         String description,
         TypeMovements type,
         ProcessStatus status,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        String processNumber
 ) {}

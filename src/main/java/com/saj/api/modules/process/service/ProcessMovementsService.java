@@ -29,7 +29,7 @@ public class ProcessMovementsService {
     private final UserService userService;
 
     public List<ProcessMovementsResponseDTO> findMovementsByProcessId(UUID id) {
-        List<ProcessMovements> movements = processMovementsRepository.findByProcessId(id);
+        List<ProcessMovements> movements = processMovementsRepository.findByProcess_Id(id);
 
         if (movements.isEmpty()) {
             throw new ObjectNotFoundException("Não foi encontado movimentos para o processo informado");

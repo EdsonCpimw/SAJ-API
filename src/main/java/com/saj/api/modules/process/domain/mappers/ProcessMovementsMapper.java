@@ -11,6 +11,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ProcessMovementsMapper {
 
+    @Mapping(target = "processNumber", source = "process.numberProcess")
     ProcessMovementsResponseDTO toProcessMovementsResponseDTO(ProcessMovements processMovements);
 
     @Mapping(target = "status", source = "dto.status")
