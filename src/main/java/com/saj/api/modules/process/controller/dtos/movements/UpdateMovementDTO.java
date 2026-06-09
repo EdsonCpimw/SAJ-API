@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record CreateMovementsDTO(
+public record UpdateMovementDTO(
         @NotNull(message = "Id do processo é obrigário")
         UUID processId,
         @NotBlank(message = "Título é obrigatório")

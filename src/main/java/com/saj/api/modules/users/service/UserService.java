@@ -122,10 +122,13 @@ public class UserService {
     }
 
     public User findById(UUID id) {
-        return userRepository.findById(id).orElseThrow(() -> {
+        log.info("Iniciando a busca do usuário pelo id: {}", id);
+        User user = userRepository.findById(id).orElseThrow(() -> {
             log.warn("Usuário não encontrado! id: {}", id);
             return new ObjectNotFoundException("Usuário não encontrado");
         });
+        log.info("Usuário encontrado com sucesso.");
+        return user;
     }
 
     public UsersResponseDTO findUserById(UUID id) {

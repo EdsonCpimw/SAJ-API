@@ -1,7 +1,9 @@
 package com.saj.api.modules.process.service;
 
 import com.saj.api.modules.process.controller.dtos.movements.CreateMovementsDTO;
+import com.saj.api.modules.process.controller.dtos.movements.ProcessMovementResponseDTO;
 import com.saj.api.modules.process.controller.dtos.movements.ProcessMovementsResponseDTO;
+import com.saj.api.modules.process.controller.dtos.movements.UpdateMovementDTO;
 import com.saj.api.modules.process.domain.entities.ProcessMovements;
 import com.saj.api.modules.process.domain.enums.ProcessStatus;
 import com.saj.api.modules.process.domain.mappers.ProcessMovementsMapper;
@@ -39,6 +41,18 @@ public class ProcessMovementsService {
                 .toList();
     }
 
+    public ProcessMovements findProcessMovementById(UUID id) {
+        return processMovementsRepository.findById(id).orElseThrow(() -> {
+            log.warn("Movimentação do processo não encontrado. id: {}", id);
+            return new ObjectNotFoundException("Movimentação não encontrado");
+        });
+    }
+
+    public ProcessMovementResponseDTO findMovementById(UUID id) {
+        log.info("Buscando a movimentação pelo id: {}", id);
+        var movement = findProcessMovementById(id);
+        return processMovementsMapper.toProcessMovementResponseDTO(movement);
+    }
 
     /*
     * TODO: Verificar a possibiliade de criar uma validação do usuário logado
@@ -55,5 +69,21 @@ public class ProcessMovementsService {
         ProcessMovements newProcessMovement = processMovementsMapper.toCreateProcessMovement(dto, process, user);
         processMovementsRepository.save(newProcessMovement);
         log.info("Movimentação de processo criada com sucesso!");
+    }
+
+    /*
+    * TODO: Alterar o usuário o que está logado no sistema
+    */
+    public void updateProcessMovement(UUID id, UpdateMovementDTO dto) {
+        log.info("Iniciando a atualização da movimentação do processo...");
+        ProcessMovements oldMovement = findProcessMovementById(id);
+
+        var userId = UUID.fromString("f117bd0a-65b0-453f-90c4-3132dc6307f8");
+        User user = userService.findById(userId);
+
+        var processMovement = processMovementsMapper.toUpdateProcessMovement(dto, user, oldMovement);
+        processMovementsRepository.save(processMovement);
+        log.info("Movimentação de processo atualizado com sucesso. id: {}", id);
+
     }
 }

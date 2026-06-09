@@ -6,13 +6,12 @@ import com.saj.api.modules.process.domain.enums.TypeMovements;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record ProcessMovementsResponseDTO(
+public record ProcessMovementResponseDTO(
         UUID id,
         String title,
         String description,
         TypeMovements type,
+        LocalDateTime dateEvent,
         ProcessStatus status,
-        LocalDateTime createdAt,
-        String processNumber,
-        LocalDateTime dateEvent
+        boolean isImportant
 ) {}

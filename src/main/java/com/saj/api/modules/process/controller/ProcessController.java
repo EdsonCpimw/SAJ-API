@@ -5,6 +5,7 @@ import com.saj.api.modules.process.docs.ProcessControllerDocs;
 import com.saj.api.modules.process.service.ProcessService;
 import com.saj.api.shared.dto.PaginationResponseDTO;
 import com.saj.api.shared.dto.SuccessResponseDTO;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class ProcessController implements ProcessControllerDocs {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SuccessResponseDTO> updateProcess(UUID id, @Valid @RequestBody UpdateProcessDTO updateProcessDTO) {
+    public ResponseEntity<SuccessResponseDTO> updateProcess(@PathVariable UUID id, @Valid @RequestBody UpdateProcessDTO updateProcessDTO) {
         processService.updateProcess(id, updateProcessDTO);
         return ResponseEntity.ok(SuccessResponseDTO.of("Processo atualizado com sucesso"));
     }

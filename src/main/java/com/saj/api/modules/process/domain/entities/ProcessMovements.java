@@ -1,5 +1,6 @@
 package com.saj.api.modules.process.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.saj.api.modules.process.domain.enums.ProcessStatus;
 import com.saj.api.modules.process.domain.enums.TypeMovements;
 import com.saj.api.modules.users.domain.entities.User;
@@ -31,8 +32,8 @@ public class ProcessMovements {
     @Column(name = "descricao")
     private String description;
     @Column(name = "importante", nullable = false)
-    private boolean isImportant;
-    @Column(name = "data_evento", nullable = false, updatable = false)
+    private boolean important;
+    @Column(name = "data_evento")
     private LocalDateTime dateEvent;
     @CreationTimestamp
     @Column(name = "criado_em", nullable = false, updatable = false)
