@@ -2,7 +2,7 @@ package com.saj.api.modules.auth.controller;
 
 import com.saj.api.modules.auth.controller.dtos.RegisterRequestDTO;
 import com.saj.api.modules.auth.docs.AuthControllerDocs;
-import com.saj.api.modules.auth.service.AuthService;
+import com.saj.api.modules.auth.service.RegisterService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/v1/auth")
 public class AuthController implements AuthControllerDocs {
 
-    private final AuthService authService;
+    private final RegisterService registerService;
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
-        authService.register(registerRequestDTO);
+        registerService.registerUser(registerRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

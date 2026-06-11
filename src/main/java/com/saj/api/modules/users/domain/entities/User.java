@@ -20,10 +20,14 @@ public class User {
     private UUID id;
     @Column(name = "nome", nullable = false, length = 150)
     private String name;
-    @Column(name = "email", nullable = false, length = 150)
+    @Column(name = "sobrenome", length = 150)
+    private String lastName;
+    @Column(name = "email", nullable = false, length = 150, unique = true)
     private String email;
     @Column(name = "senha", nullable = false)
     private String password;
+    @Column(name = "keycloak_id", unique = true)
+    private UUID keycloakId;
     @Column(name = "telefone", nullable = false)
     private String phone;
     @Column(name = "ativo", nullable = false)

@@ -47,9 +47,14 @@ public class UserService {
         }
     }
 
-    public void  saveUser(User user) {
-        userRepository.save(user);
+//    public void  saveUser(User user) {
+//        userRepository.save(user);
+//    }
+
+    public User  saveUser(User user) {
+        return userRepository.save(user);
     }
+
 
     /*
     * TODO: O id do escritório precisar vir do login do usuário
