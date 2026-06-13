@@ -56,23 +56,20 @@ public class UserService {
     }
 
 
-    /*
-    * TODO: O id do escritório precisar vir do login do usuário
-    */
-    public void createUser(CreateUserDTO dto) {
+    public void createUser(CreateUserDTO dto, User authenticatedUser) {
         log.info("Cadastrando usuário: {}", dto.email());
         validateEmailAlreadyExists(dto.email());
-        var  id = UUID.fromString("45dd1158-8fd0-432c-a444-5148fe6c4b6e");
-        var company = companyService.companyFindById(id);
+        var company = companyService.companyFindById(authenticatedUser.getCompany().getId());
         User user = userMapper.toUserCreate(dto, company, passwordEncoder.encode(dto.password()));
         this.saveUser(user);
         log.info("Usuário criado com sucesso. email: {}", dto.email());
     }
 
-    public List<UsersResponseDTO> findAllWithFilters(String companyName, String name, String email, String phone) {
+    public List<UsersResponseDTO> findAllWithFilters(String companyName, String name, String email, String phone, User authenticatedUser) {
 
         Specification<User> spec = Specification
-                .where(UserSpecification.companyNameContains(companyName))
+                .where(UserSpecification.companyContains(authenticatedUser.getCompany()))
+                .and(UserSpecification.companyNameContains(companyName))
                 .and(UserSpecification.nameContains(name))
                 .and(UserSpecification.emailContains(email))
                 .and(UserSpecification.phoneContains(phone));
@@ -83,10 +80,11 @@ public class UserService {
                 .toList();
     }
 
-    public PaginationResponseDTO<UsersResponseDTO> findAllUsersSearch(UserSearchDTO filter) {
+    public PaginationResponseDTO<UsersResponseDTO> findAllUsersSearch(UserSearchDTO filter, User authenticatedUser) {
 
         Specification<User> spec = Specification
-                .where(UserSpecification.search(filter.search()))
+                .where(UserSpecification.companyContains(authenticatedUser.getCompany()))
+                .and(UserSpecification.search(filter.search()))
                 .and(UserSpecification.isActive(filter.active()));
 
         int  page = filter.page() != null && filter.page() >= 0 ? filter.page() : 0;
@@ -133,6 +131,16 @@ public class UserService {
             return new ObjectNotFoundException("Usuário não encontrado");
         });
         log.info("Usuário encontrado com sucesso.");
+        return user;
+    }
+
+    public User findUserByEmail(String email) {
+        log.info("Iniciando a busca do usuário pelo email: {}", email);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> {
+            log.warn("Usuário não encontrado! e-mail: {}", email);
+            return new ObjectNotFoundException("Usuário não encontrado");
+        });
+        log.info("usuário encontrado com sucesso.");
         return user;
     }
 
