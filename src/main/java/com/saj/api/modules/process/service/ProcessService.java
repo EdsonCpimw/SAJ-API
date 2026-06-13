@@ -1,5 +1,7 @@
 package com.saj.api.modules.process.service;
 
+import com.saj.api.modules.auth.controller.dtos.AuthenticatedUser;
+import com.saj.api.modules.auth.service.AuthService;
 import com.saj.api.modules.process.controller.dtos.process.*;
 import com.saj.api.modules.process.domain.entities.Process;
 import com.saj.api.modules.process.domain.mappers.ProcessMapper;
@@ -36,12 +38,21 @@ public class ProcessService {
     private final ProcessMapper processMapper;
     private final CompanyService companyService;
     private final UserService userService;
+    private final AuthService authService;
 
 
     public PaginationResponseDTO<ProcessResponseDTO> findAllProcessSearch(ProcessSearchDTO filter) {
         log.info("Iniciando consulta de processos...");
+
+        User authenticatedUser = authService.getCurrentUser();
+
+        System.out.println("Usuário logado: id: " + authenticatedUser.getId()
+                + ", email: " + authenticatedUser.getEmail()
+                + ", company: " + authenticatedUser.getCompany().getId());
+
         Specification<Process> spec = Specification
-                .where(ProcessSpecification.search(filter.search()))
+                .where(ProcessSpecification.companyContains(authenticatedUser.getCompany()))
+                .and(ProcessSpecification.search(filter.search()))
                 .and(ProcessSpecification.hasStatus(filter.status()))
                 .and(ProcessSpecification.hasLegalArea(filter.legalArea()))
                 .and(ProcessSpecification.hasProcessPriority(filter.priority()));
@@ -78,17 +89,11 @@ public class ProcessService {
         });
     }
 
-
-    /*
-    * TODO: Incluir no cadastro o escritorio_id e o criado_por com os dados do usuário logado.
-    */
     public void createProcess(CreateProcessDTO dto) {
         log.info("Iniciando cadastro de um processo...");
-        var companyId = UUID.fromString("45dd1158-8fd0-432c-a444-5148fe6c4b6e");
-        var createdBy = UUID.fromString("40976e03-ead4-400e-a27c-c6630cffa64c");
-
-        Company company = companyService.companyFindById(companyId);
-        User user = userService.findById(createdBy);
+        User authenticatedUser = authService.getCurrentUser();
+        Company company = companyService.companyFindById(authenticatedUser.getCompany().getId());
+        User user = userService.findById(authenticatedUser.getId());
 
         Process newProcess = processMapper.toProcessCreate(dto, company, user);
         processRepository.save(newProcess);

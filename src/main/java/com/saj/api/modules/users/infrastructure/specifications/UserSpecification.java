@@ -1,5 +1,6 @@
 package com.saj.api.modules.users.infrastructure.specifications;
 
+import com.saj.api.modules.users.domain.entities.Company;
 import com.saj.api.modules.users.domain.entities.User;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -31,6 +32,12 @@ public class UserSpecification {
     public static Specification<User> isActive(Boolean active) {
         return (root, query, cb) -> active == null ? null
                 : cb.equal(root.get("active"), active);
+    }
+
+    public static Specification<User> companyContains(Company company) {
+        return (root, query, criteriaBuilder) -> company == null
+                ? null
+                : criteriaBuilder.equal(root.get("company"), company);
     }
 
     public static Specification<User> search(String search) {

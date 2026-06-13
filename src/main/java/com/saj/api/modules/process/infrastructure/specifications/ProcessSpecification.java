@@ -4,7 +4,10 @@ import com.saj.api.modules.process.domain.entities.Process;
 import com.saj.api.modules.process.domain.enums.LegalArea;
 import com.saj.api.modules.process.domain.enums.ProcessPriority;
 import com.saj.api.modules.process.domain.enums.ProcessStatus;
+import com.saj.api.modules.users.domain.entities.Company;
 import org.springframework.data.jpa.domain.Specification;
+
+import java.util.UUID;
 
 public class ProcessSpecification {
     private ProcessSpecification() {}
@@ -40,5 +43,11 @@ public class ProcessSpecification {
         return (root, query, criteriaBuilder) -> priority == null
                 ? null
                 : criteriaBuilder.equal(root.get("priority"), priority);
+    }
+
+    public static Specification<Process> companyContains(Company company) {
+        return (root, query, cb) -> company == null
+                ? null
+                : cb.equal(root.get("company"), company);
     }
 }

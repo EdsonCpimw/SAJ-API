@@ -1,10 +1,12 @@
 package com.saj.api.modules.users.controller;
 
+import com.saj.api.modules.auth.service.AuthService;
 import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
 import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
 import com.saj.api.modules.users.controller.dtos.UserSearchDTO;
 import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
 import com.saj.api.modules.users.docs.UserControllerDocs;
+import com.saj.api.modules.users.domain.entities.User;
 import com.saj.api.modules.users.service.UserService;
 import com.saj.api.shared.dto.PaginationResponseDTO;
 import com.saj.api.shared.dto.SuccessResponseDTO;
@@ -22,17 +24,18 @@ import java.util.UUID;
 public class UserController implements UserControllerDocs {
 
     private final UserService userService;
+    private final AuthService authService;
 
     @GetMapping
-    public ResponseEntity<PaginationResponseDTO<UsersResponseDTO>> findAllUsers(
-            @ModelAttribute UserSearchDTO filter
-            ) {
-        return ResponseEntity.ok(userService.findAllUsersSearch(filter));
+    public ResponseEntity<PaginationResponseDTO<UsersResponseDTO>> findAllUsers(@ModelAttribute UserSearchDTO filter) {
+        User authenticatedUser = authService.getCurrentUser();
+        return ResponseEntity.ok(userService.findAllUsersSearch(filter, authenticatedUser));
     }
 
     @PostMapping
     public ResponseEntity<Void> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) {
-        userService.createUser(createUserDTO);
+        User authenticatedUser = authService.getCurrentUser();
+        userService.createUser(createUserDTO, authenticatedUser);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
