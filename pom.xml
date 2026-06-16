@@ -81,6 +81,11 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<!--  Envio de Email  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 		<!--  Reaload automatico  -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
