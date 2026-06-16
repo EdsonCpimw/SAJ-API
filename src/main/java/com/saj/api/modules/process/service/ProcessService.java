@@ -94,8 +94,8 @@ public class ProcessService {
         User authenticatedUser = authService.getCurrentUser();
         Company company = companyService.companyFindById(authenticatedUser.getCompany().getId());
         User user = userService.findById(authenticatedUser.getId());
-
-        Process newProcess = processMapper.toProcessCreate(dto, company, user);
+        User client = userService.findById(dto.clientId());
+        Process newProcess = processMapper.toProcessCreate(dto, company, user, client);
         processRepository.save(newProcess);
         log.info("Processo criado com sucesso. numero do processo: {}", dto.numberProcess());
     }
