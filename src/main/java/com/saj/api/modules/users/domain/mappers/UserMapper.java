@@ -1,6 +1,7 @@
 package com.saj.api.modules.users.domain.mappers;
 
 import com.saj.api.modules.auth.controller.dtos.RegisterRequestDTO;
+import com.saj.api.modules.users.controller.dtos.ClientSearchResponseDTO;
 import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
 import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
 import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
@@ -40,4 +41,6 @@ public interface UserMapper {
     UsersResponseDTO toUsersResponseDTO(User user);
 
     void updateUserFromDTO(UpdateUserDTO dto, @MappingTarget User user);
+
+    ClientSearchResponseDTO toClientsResponseDTO(User clients);
 }

@@ -4,7 +4,6 @@ import com.saj.api.modules.users.domain.entities.Company;
 import com.saj.api.modules.users.domain.entities.User;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.lang.model.element.NestingKind;
 
 public class UserSpecification {
     private UserSpecification() {}
@@ -51,6 +50,17 @@ public class UserSpecification {
                     cb.like(cb.lower(root.get("email")), pattern),
                     cb.like(cb.lower(root.get("phone")), pattern),
                     cb.like(cb.lower(root.join("company").get("name")), pattern)
+            );
+        };
+    }
+
+    public static Specification<User> searchClients(String search) {
+        return (root, query, criteriaBuilder) -> {
+            if (search == null || search.isBlank()) return null;
+            String pattern = "%" + search.toLowerCase() + "%";
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), pattern)
             );
         };
     }

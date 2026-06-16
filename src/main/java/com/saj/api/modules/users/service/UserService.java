@@ -1,9 +1,6 @@
 package com.saj.api.modules.users.service;
 
-import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
-import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
-import com.saj.api.modules.users.controller.dtos.UserSearchDTO;
-import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
+import com.saj.api.modules.users.controller.dtos.*;
 import com.saj.api.modules.users.domain.entities.User;
 import com.saj.api.modules.users.domain.mappers.UserMapper;
 import com.saj.api.modules.users.infrastructure.repository.UserRepository;
@@ -46,10 +43,6 @@ public class UserService {
             throw new BusinessException("Email já cadastrado");
         }
     }
-
-//    public void  saveUser(User user) {
-//        userRepository.save(user);
-//    }
 
     public User  saveUser(User user) {
         return userRepository.save(user);
@@ -161,6 +154,19 @@ public class UserService {
         String status = user.isActive() ? "ativado" : "inativado";
         log.info("Usuário {} com sucesso. id: {}", status, id);
         return SuccessResponseDTO.of("Usuário " + status + " com sucesso");
+    }
+
+    public List<ClientSearchResponseDTO> findClientsSearch(String search, User authenticatedUser) {
+
+        Specification<User> spec = Specification
+                .where(UserSpecification.companyContains(authenticatedUser.getCompany()))
+                .and(UserSpecification.searchClients(search));
+
+
+        return userRepository.findAll(spec)
+                .stream()
+                .map(userMapper::toClientsResponseDTO)
+                .toList();
     }
 
 }

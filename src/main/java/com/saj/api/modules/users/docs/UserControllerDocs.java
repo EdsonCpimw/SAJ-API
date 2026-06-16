@@ -1,9 +1,6 @@
 package com.saj.api.modules.users.docs;
 
-import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
-import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
-import com.saj.api.modules.users.controller.dtos.UserSearchDTO;
-import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
+import com.saj.api.modules.users.controller.dtos.*;
 import com.saj.api.shared.dto.PaginationResponseDTO;
 import com.saj.api.shared.dto.SuccessResponseDTO;
 import com.saj.api.shared.exceptions.dtos.ErrorResponseDTO;
@@ -19,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.Parameter;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -369,4 +367,50 @@ public interface UserControllerDocs {
     )
     @PatchMapping("/{id}")
     ResponseEntity<SuccessResponseDTO> toggleUser(@PathVariable UUID id);
+
+    @Operation(
+            summary = "Listar clientes",
+            description = "Endpoint para listar clientes com pesquisa",
+            parameters = {
+
+                    @Parameter(
+                            name = "search",
+                            description = "Buscar pelo nome ou email do cliente",
+                            in = ParameterIn.QUERY,
+                            schema = @Schema(type = "string")
+                    ),
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Sucesso",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    [
+                                                      {
+                                                        "id": "eac97e0a-04db-4b9d-8a4b-e40acd702469",
+                                                        "name": "Juarez",
+                                                        "email": "jua@email.com"
+                                                      },
+                                                      {
+                                                        "id": "76bc5650-7213-4fdd-9472-5d632e946a83",
+                                                        "name": "Jose",
+                                                        "email": "jose@email.com"
+                                                      }
+                                                    ]
+                                            """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Não autenticado",
+                            content = @Content
+                    )
+            }
+    )
+    @GetMapping("/clients")
+    public ResponseEntity<List<ClientSearchResponseDTO>> searchClients(@RequestParam(required = false) String search);
 }

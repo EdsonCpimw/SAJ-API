@@ -1,10 +1,7 @@
 package com.saj.api.modules.users.controller;
 
 import com.saj.api.modules.auth.service.AuthService;
-import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
-import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
-import com.saj.api.modules.users.controller.dtos.UserSearchDTO;
-import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
+import com.saj.api.modules.users.controller.dtos.*;
 import com.saj.api.modules.users.docs.UserControllerDocs;
 import com.saj.api.modules.users.domain.entities.User;
 import com.saj.api.modules.users.service.UserService;
@@ -16,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -54,5 +52,12 @@ public class UserController implements UserControllerDocs {
     @PatchMapping("/{id}/status")
     public ResponseEntity<SuccessResponseDTO> toggleUser(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.toggleUserActive(id));
+    }
+
+    @GetMapping("/clients")
+    public ResponseEntity<List<ClientSearchResponseDTO>> searchClients(@RequestParam(required = false) String search) {
+        User authenticatedUser = authService.getCurrentUser();
+        var teste = userService.findClientsSearch(search, authenticatedUser);
+        return ResponseEntity.ok(teste);
     }
 }
