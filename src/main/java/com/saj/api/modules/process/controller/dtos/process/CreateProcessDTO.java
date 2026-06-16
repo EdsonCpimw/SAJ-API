@@ -6,6 +6,8 @@ import com.saj.api.modules.process.domain.enums.ProcessStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.UUID;
+
 public record CreateProcessDTO(
         @NotBlank(message = "Numero do processo é obrigatório")
         String numberProcess,
@@ -22,6 +24,8 @@ public record CreateProcessDTO(
         @NotBlank(message = "Vara é obrigatório")
         String courtDivision,
         @NotBlank(message = "Tribunal é obrigatório")
-        String court
-) {
-}
+        String court,
+        @NotNull(message = "Cliente é obrigatório")
+        UUID clientId
+
+) {}

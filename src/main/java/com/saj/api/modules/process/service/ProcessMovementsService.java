@@ -8,16 +8,18 @@ import com.saj.api.modules.process.controller.dtos.movements.UpdateMovementDTO;
 import com.saj.api.modules.process.domain.entities.Process;
 import com.saj.api.modules.process.domain.entities.ProcessMovements;
 import com.saj.api.modules.process.domain.enums.ProcessStatus;
+import com.saj.api.modules.process.domain.events.MovementCreatedEvent;
 import com.saj.api.modules.process.domain.mappers.ProcessMovementsMapper;
 import com.saj.api.modules.process.infrastructure.repository.ProcessMovementsRepository;
 import com.saj.api.modules.users.domain.entities.User;
-import com.saj.api.modules.users.service.UserService;
 import com.saj.api.shared.exceptions.BusinessException;
 import com.saj.api.shared.exceptions.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,8 +32,8 @@ public class ProcessMovementsService {
     private final ProcessMovementsRepository processMovementsRepository;
     private final ProcessMovementsMapper processMovementsMapper;
     private final ProcessService processService;
-    private final UserService userService;
     private final AuthService authService;
+    private final ApplicationEventPublisher eventPublisher;
 
 
     public List<ProcessMovementsResponseDTO> findMovementsByProcessId(UUID id) {
@@ -58,6 +60,7 @@ public class ProcessMovementsService {
         return processMovementsMapper.toProcessMovementResponseDTO(movement);
     }
 
+    @Transactional
     public void createProcessMovement(CreateMovementsDTO dto) {
         log.info("Iniciando o cadastro da movimentação de procesos...");
         User authenticatedUser = authService.getCurrentUser();
@@ -68,7 +71,12 @@ public class ProcessMovementsService {
         }
         validateUserBelongsToCompany(authenticatedUser, process);
         ProcessMovements newProcessMovement = processMovementsMapper.toCreateProcessMovement(dto, process, authenticatedUser);
-        processMovementsRepository.save(newProcessMovement);
+        var savedMovement = processMovementsRepository.save(newProcessMovement);
+        var moviment = processMovementsRepository.findByIdWithClient(savedMovement.getId()).orElseThrow(() -> {
+            log.warn("Movimentação de processo não encontrado id: {}", savedMovement.getId());
+            return new ObjectNotFoundException("Problema para cadastar a movimentação de processo");
+        });
+        eventPublisher.publishEvent(new MovementCreatedEvent(moviment));
         log.info("Movimentação de processo criada com sucesso!");
     }
 
@@ -82,7 +90,7 @@ public class ProcessMovementsService {
             throw new BusinessException("Não foi possível criar a movimentação de prceosso");
         }
     }
-    
+
     public void updateProcessMovement(UUID id, UpdateMovementDTO dto) {
         log.info("Iniciando a atualização da movimentação do processo...");
         ProcessMovements oldMovement = findProcessMovementById(id);

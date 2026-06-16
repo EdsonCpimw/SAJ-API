@@ -21,7 +21,8 @@ public interface ProcessMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "company", source = "company")
     @Mapping(target = "createdBy", source = "user")
-    Process toProcessCreate(CreateProcessDTO dto, Company company, User user);
+    @Mapping(target = "client", source = "client")
+    Process toProcessCreate(CreateProcessDTO dto, Company company, User user, User client);
 
     void updateProcessFromDTO(UpdateProcessDTO dto, @MappingTarget Process process);
 

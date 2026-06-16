@@ -59,7 +59,11 @@ public class Process {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "atribuido_para")
-    private User assignerdTo;
+    private User assignedTo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cliente_id")
+    private User client;
 
     @OneToMany(mappedBy = "process", fetch = FetchType.LAZY)
     private List<ProcessMovements> processMovements = new ArrayList<>();
