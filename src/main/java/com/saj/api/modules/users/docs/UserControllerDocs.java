@@ -413,4 +413,48 @@ public interface UserControllerDocs {
     )
     @GetMapping("/clients")
     public ResponseEntity<List<ClientSearchResponseDTO>> searchClients(@RequestParam(required = false) String search);
+
+    @Operation(
+            summary = "Buscar Usuário logado",
+            description = "Buscar um usuário logado no sistema",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Dados do usuário logado",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SuccessResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "id": "40976e03-ead4-400e-a27c-c6630cffa64b",
+                                                      "name": "Bruno",
+                                                      "lastName": "Henrique",
+                                                      "phone": "(26) 37519-0748"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Usuário não encontrado",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 404,
+                                                      "message": "Usuário não encontrado",
+                                                      "timestamp": "2026-05-30T17:23:30.225002"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+            }
+    )
+    @GetMapping("/me")
+    public ResponseEntity<UserLoggedResponseDTO> getUserMe();
 }

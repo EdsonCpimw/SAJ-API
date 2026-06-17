@@ -169,4 +169,17 @@ public class UserService {
                 .toList();
     }
 
+    public UserLoggedResponseDTO getUserMe(User authenticatedUser) {
+        User user = findUserByEmail(authenticatedUser.getEmail());
+        return userMapper.toUserLoggedResponseDTO(user);
+    }
+
+    public void updateUserMe(User authenticatedUser,UpdateUserRequestDTO dto) {
+        log.info("Inicinado atualização do usuário logado: email: {}", authenticatedUser.getEmail());
+        User user = findUserByEmail(authenticatedUser.getEmail());
+        userMapper.toUpdateMe(dto, user);
+        userRepository.save(user);
+        log.info("O usuário logado com o email {} foi atualizado com sucesso", user.getEmail());
+    }
+
 }

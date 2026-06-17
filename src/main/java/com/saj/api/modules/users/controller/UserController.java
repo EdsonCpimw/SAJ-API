@@ -57,7 +57,18 @@ public class UserController implements UserControllerDocs {
     @GetMapping("/clients")
     public ResponseEntity<List<ClientSearchResponseDTO>> searchClients(@RequestParam(required = false) String search) {
         User authenticatedUser = authService.getCurrentUser();
-        var teste = userService.findClientsSearch(search, authenticatedUser);
-        return ResponseEntity.ok(teste);
+        return ResponseEntity.ok(userService.findClientsSearch(search, authenticatedUser));
+    }
+    @GetMapping("/me")
+    public ResponseEntity<UserLoggedResponseDTO> getUserMe() {
+        User authenticatedUser = authService.getCurrentUser();
+        return ResponseEntity.ok(userService.getUserMe(authenticatedUser));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<SuccessResponseDTO> updateUserMe(@Valid @RequestBody UpdateUserRequestDTO updateUserRequestDTO) {
+        User authenticatedUser = authService.getCurrentUser();
+        userService.updateUserMe(authenticatedUser, updateUserRequestDTO);
+        return ResponseEntity.ok(SuccessResponseDTO.of("Usuário atualiado com sucesso."));
     }
 }

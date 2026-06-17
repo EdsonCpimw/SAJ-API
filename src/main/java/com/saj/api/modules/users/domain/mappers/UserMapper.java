@@ -1,10 +1,7 @@
 package com.saj.api.modules.users.domain.mappers;
 
 import com.saj.api.modules.auth.controller.dtos.RegisterRequestDTO;
-import com.saj.api.modules.users.controller.dtos.ClientSearchResponseDTO;
-import com.saj.api.modules.users.controller.dtos.CreateUserDTO;
-import com.saj.api.modules.users.controller.dtos.UpdateUserDTO;
-import com.saj.api.modules.users.controller.dtos.UsersResponseDTO;
+import com.saj.api.modules.users.controller.dtos.*;
 import com.saj.api.modules.users.domain.entities.Company;
 import com.saj.api.modules.users.domain.entities.User;
 import com.saj.api.shared.utils.StringUtils;
@@ -43,4 +40,8 @@ public interface UserMapper {
     void updateUserFromDTO(UpdateUserDTO dto, @MappingTarget User user);
 
     ClientSearchResponseDTO toClientsResponseDTO(User clients);
+
+    UserLoggedResponseDTO toUserLoggedResponseDTO(User user);
+
+    void toUpdateMe(UpdateUserRequestDTO dto, @MappingTarget User user);
 }
