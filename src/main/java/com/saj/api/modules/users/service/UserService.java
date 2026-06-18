@@ -11,8 +11,11 @@ import com.saj.api.shared.exceptions.BusinessException;
 import com.saj.api.shared.exceptions.ObjectNotFoundException;
 import com.saj.api.shared.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +38,10 @@ public class UserService {
     private final CompanyService companyService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final Keycloak keycloak;
+
+    @Value("${keycloak.realm}")
+    private String realm;
 
 
     public void validateEmailAlreadyExists(String email) {
@@ -179,7 +186,17 @@ public class UserService {
         User user = findUserByEmail(authenticatedUser.getEmail());
         userMapper.toUpdateMe(dto, user);
         userRepository.save(user);
+        updateUserInKeycloak(authenticatedUser.getKeycloakId(), dto);
         log.info("O usuário logado com o email {} foi atualizado com sucesso", user.getEmail());
+    }
+
+    public void updateUserInKeycloak(UUID keycloakId, UpdateUserRequestDTO dto) {
+        log.info("Iniciando a atualização do usuário com o keycloakId: {} no Keycloak", keycloakId);
+        UserRepresentation keycloakUser = new UserRepresentation();
+        keycloakUser.setFirstName(dto.name());
+        keycloakUser.setLastName(dto.lastName());
+        keycloak.realm(realm).users().get(keycloakId.toString()).update(keycloakUser);
+        log.info("Usuário atualizado com sucesso no keycloak");
     }
 
 }

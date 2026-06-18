@@ -69,6 +69,6 @@ public class UserController implements UserControllerDocs {
     public ResponseEntity<SuccessResponseDTO> updateUserMe(@Valid @RequestBody UpdateUserRequestDTO updateUserRequestDTO) {
         User authenticatedUser = authService.getCurrentUser();
         userService.updateUserMe(authenticatedUser, updateUserRequestDTO);
-        return ResponseEntity.ok(SuccessResponseDTO.of("Usuário atualiado com sucesso."));
+        return ResponseEntity.ok(SuccessResponseDTO.of("Perfil atualizado com sucesso."));
     }
 }

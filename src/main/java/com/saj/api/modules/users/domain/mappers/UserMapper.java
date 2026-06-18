@@ -18,6 +18,7 @@ public interface UserMapper {
     Company toCompany(RegisterRequestDTO dto);
 
     @Mapping(target = "name", source = "dto.user.name")
+    @Mapping(target = "lastName", source = "dto.user.lastName")
     @Mapping(target = "email", source = "dto.user.email")
     @Mapping(target = "phone", source = "dto.user.phone")
     @Mapping(target = "password", source = "hashedPassword")

@@ -6,6 +6,7 @@ import com.saj.api.modules.users.domain.entities.User;
 import com.saj.api.modules.users.domain.mappers.UserMapper;
 import com.saj.api.modules.users.service.CompanyService;
 import com.saj.api.modules.users.service.UserService;
+import com.saj.api.shared.exceptions.BusinessException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -75,7 +76,7 @@ public class RegisterService {
 
         if (response.getStatus() != 201) {
             log.warn("Erro ao criar usuário no Keycloak: {}", response.getStatus());
-            throw new RuntimeException("Erro ao criar usuário no Keycloak");
+            throw new BusinessException("Erro ao criar usuário no Keycloak");
         }
 
         return CreatedResponseUtil.getCreatedId(response);
@@ -91,6 +92,7 @@ public class RegisterService {
         keycloakUser.setUsername(dto.user().email());
         keycloakUser.setEmail(dto.user().email());
         keycloakUser.setFirstName(dto.user().name());
+        keycloakUser.setLastName(dto.user().lastName());
         keycloakUser.setEnabled(true);
         keycloakUser.setCredentials(List.of(credential));
         return keycloakUser;

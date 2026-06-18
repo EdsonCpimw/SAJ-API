@@ -456,5 +456,77 @@ public interface UserControllerDocs {
             }
     )
     @GetMapping("/me")
-    public ResponseEntity<UserLoggedResponseDTO> getUserMe();
+    ResponseEntity<UserLoggedResponseDTO> getUserMe();
+
+    @Operation(
+            summary = "Atualizar perfil do usuário",
+            description = "Atualizar o perfil usuário no sistema",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UpdateUserRequestDTO.class)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Perfil atualizado com sucesso",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SuccessResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 200,
+                                                      "message": "Perfil atualizado com sucesso",
+                                                      "timestamp": "2026-05-31T17:12:31.547721"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Usuário não encontrado",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 404,
+                                                      "message": "Usuário não encontrado",
+                                                      "timestamp": "2026-05-30T17:23:30.225002"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "422",
+                            description = "Violação de dados",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponseDTO.class),
+                                    examples = @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": 422,
+                                                      "message": "Erro de validação",
+                                                      "timestamp": "2026-05-30T17:22:06.150131",
+                                                      "errors": [
+                                                        {
+                                                          "field": "name",
+                                                          "message": "Nome é obrigatório"
+                                                        }
+                                                      ]
+                                                    }
+                                                    """
+                                    )
+                            )
+                    )
+            }
+    )
+    @PutMapping("/me")
+    ResponseEntity<SuccessResponseDTO> updateUserMe(@Valid @RequestBody UpdateUserRequestDTO updateUserRequestDTO);
 }
