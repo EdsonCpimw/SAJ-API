@@ -12,6 +12,7 @@ import com.saj.api.modules.users.domain.entities.User;
 import com.saj.api.modules.users.service.CompanyService;
 import com.saj.api.modules.users.service.UserService;
 import com.saj.api.shared.dto.PaginationResponseDTO;
+import com.saj.api.shared.exceptions.BusinessException;
 import com.saj.api.shared.exceptions.ObjectNotFoundException;
 import com.saj.api.shared.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
@@ -89,6 +90,13 @@ public class ProcessService {
         });
     }
 
+    public Process findProcessByIdWithClint(UUID id) {
+        return processRepository.findByIdWithClient(id).orElseThrow(() -> {
+            log.warn("Processo com o id {} não encontrado. ", id);
+            return new ObjectNotFoundException("Processo não encontrado");
+        });
+    }
+
     public void createProcess(CreateProcessDTO dto) {
         log.info("Iniciando cadastro de um processo...");
         User authenticatedUser = authService.getCurrentUser();
@@ -103,15 +111,18 @@ public class ProcessService {
 
     public void updateProcess(UUID id, UpdateProcessDTO dto) {
         log.info("Iniciando atualização de processo... id: {}", id);
+        User authenticatedUser = authService.getCurrentUser();
         var oldProcess = findById(id);
-        processMapper.updateProcessFromDTO(dto, oldProcess);
+        User client = userService.findById(dto.clientId());
+        validateClientProcess(authenticatedUser, client);
+        processMapper.updateProcessFromDTO(dto, oldProcess, client);
         processRepository.save(oldProcess);
         log.info("Processo atualizado com sucesso. id: {}", id);
     }
 
     public ProcessResponseDTO findProcessById(UUID id) {
         log.info("Buscando processo pelo id: {}", id);
-        return processMapper.toProcessResponseDTO(findById(id));
+        return processMapper.toProcessResponseDTO(findProcessByIdWithClint(id));
     }
 
     public void updateProcessStatusById(UUID id, UpadateStatusProcessDTO dto) {
@@ -120,5 +131,12 @@ public class ProcessService {
         var newStatusProcess = processMapper.toUpdateProcessStatus(dto, process);
         processRepository.save(newStatusProcess);
         log.info("Status do processo atualizado com sucesso. id: {}", id);
+    }
+
+    public void validateClientProcess(User client, User authenticated) {
+        if (!authenticated.getCompany().getId().equals(client.getCompany().getId())) {
+            log.warn("O cliente de id: {} associado ao processo não pertence a empresa do usuário logado de id: {} ", client.getId(), authenticated.getId());
+            throw new BusinessException("O cliente não cadastro em sua empresa");
+        }
     }
 }

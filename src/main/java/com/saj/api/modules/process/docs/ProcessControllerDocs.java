@@ -317,12 +317,18 @@ public interface ProcessControllerDocs {
                                                       "numberProcess": "7018452-34.2026.8.19.0023",
                                                       "title": "Ação para impostos compra automovel",
                                                       "description": "Ação para impostos devolvidos na compra de um automovel",
-                                                      "status": "IN_PROGRESS",
-                                                      "legalArea": "LABOR",
+                                                      "status": "FINISHED",
+                                                      "legalArea": "TAX",
                                                       "courtDivision": "2ª Vara Cível de Campinas",
                                                       "court": "TJSP",
-                                                      "priority": "URGENT",
-                                                      "createdAt": "2026-06-02T22:43:18.092893"
+                                                      "priority": "LOW",
+                                                      "createdAt": "2026-06-02T22:43:18.092893",
+                                                      "hasMovements": true,
+                                                      "client": {
+                                                        "id": "4f757cbb-1f10-4310-aab6-564c6148f0c9",
+                                                        "name": "Edson",
+                                                        "email": "edson@gmail.com"
+                                                      }
                                                     }
                                                     """
                                     )

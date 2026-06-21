@@ -15,6 +15,9 @@ import org.mapstruct.MappingTarget;
 public interface ProcessMapper {
 
     @Mapping(target = "hasMovements", expression = "java(process.hasMovements())")
+    @Mapping(target = "client.id", source = "client.id")
+    @Mapping(target = "client.name", source = "client.name")
+    @Mapping(target = "client.email", source = "client.email")
     ProcessResponseDTO toProcessResponseDTO(Process process);
 
     @Mapping(target = "id", ignore = true)
@@ -24,7 +27,9 @@ public interface ProcessMapper {
     @Mapping(target = "client", source = "client")
     Process toProcessCreate(CreateProcessDTO dto, Company company, User user, User client);
 
-    void updateProcessFromDTO(UpdateProcessDTO dto, @MappingTarget Process process);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "client", source = "client")
+    void updateProcessFromDTO(UpdateProcessDTO dto, @MappingTarget Process process, User client);
 
     Process toUpdateProcessStatus(UpadateStatusProcessDTO dto, @MappingTarget Process process);
 }

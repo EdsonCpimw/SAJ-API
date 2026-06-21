@@ -3,6 +3,7 @@ package com.saj.api.modules.process.controller.dtos.process;
 import com.saj.api.modules.process.domain.enums.LegalArea;
 import com.saj.api.modules.process.domain.enums.ProcessPriority;
 import com.saj.api.modules.process.domain.enums.ProcessStatus;
+import com.saj.api.modules.users.controller.dtos.ClientSearchResponseDTO;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,5 +19,6 @@ public record ProcessResponseDTO(
         String court,
         ProcessPriority priority,
         LocalDateTime createdAt,
-        boolean hasMovements
+        boolean hasMovements,
+        ClientSearchResponseDTO client
 ) {}
