@@ -34,7 +34,7 @@ public interface ProcessMovementsMapper {
     @Mapping(target = "important", source = "dto.isImportant")
     ProcessMovements toUpdateProcessMovement(UpdateMovementDTO dto, User user, @MappingTarget ProcessMovements movement);
 
-
+    @Mapping(target = "isImportant", source = "important")
     ProcessMovementResponseDTO toProcessMovementResponseDTO(ProcessMovements processMovements);
 
 }
