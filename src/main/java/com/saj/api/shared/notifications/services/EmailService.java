@@ -1,10 +1,13 @@
 package com.saj.api.shared.notifications.services;
 
 import com.saj.api.modules.process.domain.entities.ProcessMovements;
+import com.saj.api.modules.users.domain.entities.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,8 @@ public class EmailService {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
 
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
 
     public void sendMovementNotification(ProcessMovements movement) {
         var process = movement.getProcess();
@@ -62,5 +67,17 @@ public class EmailService {
         } catch (MessagingException ex) {
             log.error("Erro ao enviar email pra: {}", to, ex);
         }
+    }
+
+    public void sendResetPasswordEmail(User user, String token) {
+        String resetUrl = frontendUrl + "/auth/reset-password?token=" + token;
+
+        Context context = new Context();
+        context.setVariable("userName", user.getName());
+        context.setVariable("resetUrl", resetUrl);
+        context.setVariable("expirationMinutes", 30);
+
+        String htmlBody = templateEngine.process("emails/reset-password", context);
+        sendHtmlEmail(user.getEmail(), "Recuperação de senha - SAJ", htmlBody);
     }
 }

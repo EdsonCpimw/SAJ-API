@@ -33,10 +33,7 @@ public class RegisterService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final CompanyService companyService;
-    private final Keycloak keycloak;
-
-    @Value("${keycloak.realm}")
-    private String realm;
+    private final KeycloakService keycloakService;
 
 
     @Transactional
@@ -50,7 +47,7 @@ public class RegisterService {
         User savedUser = cerateUserAndCompany(dto);
 
         // 3. Só agora cria no Keycloak
-        String keycloakId = createUserOnKeycloak(dto);
+        String keycloakId = keycloakService.createUserOnKeycloak(dto);
 
         // 4. Atualiza o keycloakId no banco
         savedUser.setKeycloakId(UUID.fromString(keycloakId));
@@ -67,35 +64,6 @@ public class RegisterService {
 
         return this.userService.saveUser(user);
 
-    }
-
-    private String createUserOnKeycloak(RegisterRequestDTO dto) {
-        UserRepresentation keycloakUser = getUserRepresentation(dto);
-
-        Response response = keycloak.realm(realm).users().create(keycloakUser);
-
-        if (response.getStatus() != 201) {
-            log.warn("Erro ao criar usuário no Keycloak: {}", response.getStatus());
-            throw new BusinessException("Erro ao criar usuário no Keycloak");
-        }
-
-        return CreatedResponseUtil.getCreatedId(response);
-    }
-
-    private UserRepresentation getUserRepresentation(RegisterRequestDTO dto) {
-        CredentialRepresentation credential = new CredentialRepresentation();
-        credential.setType(CredentialRepresentation.PASSWORD);
-        credential.setValue(dto.user().password());
-        credential.setTemporary(false);
-
-        UserRepresentation keycloakUser = new UserRepresentation();
-        keycloakUser.setUsername(dto.user().email());
-        keycloakUser.setEmail(dto.user().email());
-        keycloakUser.setFirstName(dto.user().name());
-        keycloakUser.setLastName(dto.user().lastName());
-        keycloakUser.setEnabled(true);
-        keycloakUser.setCredentials(List.of(credential));
-        return keycloakUser;
     }
 
 }
